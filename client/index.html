@@ -13,8 +13,8 @@
     <div class="loginContainer">
       <div class="loginTitle">Inicio de Sesión</div>
       <div class="fields-Container">
-        <input type="text" id="user" placeholder="Usuario..." />
-        <input type="password" id="pass" placeholder="Contraseña..." />
+        <input type="text" id="user" placeholder="Usuario..." value="prueba1@gmail.com" />
+        <input type="password" id="pass" placeholder="Contraseña..." value="prueba1" />
         <button id="login" class="loginButton">Ingresar</button>
       </div>
     </div>
@@ -25,8 +25,11 @@
         $('.loginButton').on('click', function(event) {
             if (nombreUsuario.val() != "" && pass.val() != "") {
                 $.post('/login',{user: nombreUsuario.val(), pass: pass.val()}, function(response) {
+                  console.log(response);
                     if (response == "Validado") {
                         window.location.href = "http://localhost:3000/main.html"
+                    }else{
+                      alert("No existe el usuario")
                     }
                 })
             } else {
