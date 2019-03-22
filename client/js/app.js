@@ -14,8 +14,15 @@ class EventManager {
         })
     }
 
+    actualizarEvento(evento) {
+      console.log(evento);
+      $.post('/events/update', {start: evento.start.format(), end: evento.end.format(), _id: evento._id}, (response) => {
+          console.log(response);
+      })
+    }
+
     eliminarEvento(evento) {
-        let eventId = evento.id
+        let eventId = evento._id
         $.post('/events/delete/'+eventId, {id: eventId}, (response) => {
             alert(response)
         })
@@ -45,10 +52,15 @@ class EventManager {
                     start: start,
                     end: end
                 }
+                var evento = ev;
                 $.post(url, ev, (response) => {
-                    alert(response)
+                  //Si no hay variable de sesion activa se redirecciona al login
+                  if (response == false) window.location.href = "/index.html"
+                  evento._id = response._id
+                  alert(response.msg)
+                  $('.calendario').fullCalendar('renderEvent', evento)
                 })
-                $('.calendario').fullCalendar('renderEvent', ev)
+
             } else {
                 alert("Complete los campos obligatorios para el evento")
             }
@@ -81,13 +93,22 @@ class EventManager {
     }
 
     inicializarCalendario(eventos) {
+        console.log(eventos);
+        //eventos = {};
+
+        var d = new Date();
+        var yyyy = d.getFullYear().toString();
+        var mm = (d.getMonth()+1).toString();
+        var dd  = d.getDate().toString();
+        var strDate = yyyy + "-" + (mm[1]?mm:"0"+mm[0]) + "-" + (dd[1]?dd:"0"+dd[0]);
+
         $('.calendario').fullCalendar({
             header: {
                 left: 'prev,next today',
                 center: 'title',
                 right: 'month,agendaWeek,basicDay'
             },
-            defaultDate: '2016-11-01',
+            defaultDate: strDate,
             navLinks: true,
             editable: true,
             eventLimit: true,
@@ -113,6 +134,7 @@ class EventManager {
                     jsEvent.pageY >= y1 && jsEvent.pageY <= y2) {
                         this.eliminarEvento(event)
                         $('.calendario').fullCalendar('removeEvents', event.id);
+                        $('.delete').find('img').attr('src', "img/delete.png");
                     }
                 }
             })
