@@ -10,6 +10,9 @@ class EventManager {
     obtenerDataInicial() {
         let url = this.urlBase + "/all"
         $.get(url, (response) => {
+          console.log(response)
+          if (response == 'logout') window.location.href = "/index.html"
+          else
             this.inicializarCalendario(response)
         })
     }
@@ -93,9 +96,6 @@ class EventManager {
     }
 
     inicializarCalendario(eventos) {
-        console.log(eventos);
-        //eventos = {};
-
         var d = new Date();
         var yyyy = d.getFullYear().toString();
         var mm = (d.getMonth()+1).toString();
@@ -133,7 +133,7 @@ class EventManager {
                 if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 &&
                     jsEvent.pageY >= y1 && jsEvent.pageY <= y2) {
                         this.eliminarEvento(event)
-                        $('.calendario').fullCalendar('removeEvents', event.id);
+                        $('.calendario').fullCalendar('removeEvents', event._id);
                         $('.delete').find('img').attr('src', "img/delete.png");
                     }
                 }
